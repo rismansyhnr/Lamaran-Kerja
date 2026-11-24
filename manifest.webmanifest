@@ -1,0 +1,33 @@
+{
+  "name": "Lamaran Kerja",
+  "short_name": "Lamaran Kerja",
+  "description": "Catat dan pantau lamaran kerja: perusahaan, posisi, tanggal, jalur lamar, dan status.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E110E",
+  "theme_color": "#0E110E",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

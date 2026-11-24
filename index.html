@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E110E">
+<meta name="application-name" content="Lamaran Kerja">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lamaran Kerja">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>:root{color-scheme:light}body{margin:0;padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
+<title>Lamaran Kerja</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: black masthead with the running count, one entry card, then a dated ledger of applications. Black is the ink, sage is the fill. */
+:root{
+  --bg:#E9EEE4; --surface:#F7F9F3; --field:#FFFFFF; --ink:#121512; --muted:#58635A; --line:#C9D2C2;
+  --band:#0E110E; --band-ink:#E3EADB; --band-muted:#9AA894; --sage:#9CAF88;
+  --btn-bg:#121512; --btn-ink:#CFDDBF; --focus:#2F5A27;
+  --warn-bg:#EFE6C8; --warn-ink:#4F4310; --err:#8A2E22;
+  --p-sent-bg:#DCE3D4; --p-sent-ink:#2B352B;
+  --p-hr-bg:#CFE0C0; --p-hr-ink:#24391C;
+  --p-interview-bg:#B9D3A4; --p-interview-ink:#1D3315;
+  --p-test-bg:#DDE0B8; --p-test-ink:#3A3D14;
+  --p-offer-bg:#2F5A27; --p-offer-ink:#F1F6EC;
+  --p-rejected-bg:#EBD5CF; --p-rejected-ink:#6B2A20;
+  --p-ghost-bg:#D8D9D5; --p-ghost-ink:#4A4D47;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C0E0C; --surface:#151915; --field:#0F120F; --ink:#E6EBE0; --muted:#9AA595; --line:#262D25;
+    --band:#050605; --band-ink:#E3EADB; --band-muted:#8E9B89;
+    --btn-bg:#9CAF88; --btn-ink:#0C0E0C; --focus:#9CAF88;
+    --warn-bg:#2F2A12; --warn-ink:#E8DCA6; --err:#F0A99D;
+    --p-sent-bg:#232B22; --p-sent-ink:#C9D3C2;
+    --p-hr-bg:#2A3A25; --p-hr-ink:#BFE0AE;
+    --p-interview-bg:#35502B; --p-interview-ink:#D3EEC2;
+    --p-test-bg:#3A3C1C; --p-test-ink:#E1E4A9;
+    --p-offer-bg:#9CAF88; --p-offer-ink:#0C0E0C;
+    --p-rejected-bg:#3B221E; --p-rejected-ink:#F0B9AF;
+    --p-ghost-bg:#2A2C29; --p-ghost-ink:#B4B8B0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C0E0C; --surface:#151915; --field:#0F120F; --ink:#E6EBE0; --muted:#9AA595; --line:#262D25;
+  --band:#050605; --band-ink:#E3EADB; --band-muted:#8E9B89;
+  --btn-bg:#9CAF88; --btn-ink:#0C0E0C; --focus:#9CAF88;
+  --warn-bg:#2F2A12; --warn-ink:#E8DCA6; --err:#F0A99D;
+  --p-sent-bg:#232B22; --p-sent-ink:#C9D3C2;
+  --p-hr-bg:#2A3A25; --p-hr-ink:#BFE0AE;
+  --p-interview-bg:#35502B; --p-interview-ink:#D3EEC2;
+  --p-test-bg:#3A3C1C; --p-test-ink:#E1E4A9;
+  --p-offer-bg:#9CAF88; --p-offer-ink:#0C0E0C;
+  --p-rejected-bg:#3B221E; --p-rejected-ink:#F0B9AF;
+  --p-ghost-bg:#2A2C29; --p-ghost-ink:#B4B8B0;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+.band{background:var(--band);color:var(--band-ink);padding-top:calc(env(safe-area-inset-top,0px) + 22px);padding-bottom:22px;border-bottom:1px solid var(--sage)}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:48px;height:48px;border-radius:10px;flex:0 0 auto}
+.band h1{margin:0;font:700 30px/1.1 var(--font-head);color:var(--sage);letter-spacing:-.01em;text-wrap:balance}
+.band .sub{margin:6px 0 0;color:var(--band-muted);font-size:13px}
+.tally{text-align:right}
+.tally .n{font:700 34px/1 var(--font-head);font-variant-numeric:tabular-nums;color:var(--band-ink)}
+.tally .l{display:block;margin-top:4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--band-muted)}
+
+main{display:flex;flex-direction:column;gap:20px;padding-block:22px 32px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:18px 16px}
+.card h2,.ledger-head h2{margin:0 0 14px;font:700 16px/1.3 var(--font-head)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1 / -1}
+label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+label .opt{text-transform:none;letter-spacing:0;font-weight:400}
+.lnk{color:var(--ink);text-underline-offset:3px;overflow-wrap:anywhere}
+input,select{width:100%;min-width:0;font-size:16px;padding:10px 12px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:4px}
+input::placeholder{color:var(--muted);opacity:.8}
+option{background:var(--surface);color:var(--ink)}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
+
+.dupe{margin-top:14px;padding:10px 12px;background:var(--warn-bg);color:var(--warn-ink);border-radius:4px;font-size:14px;overflow-wrap:anywhere}
+.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{cursor:pointer;padding:10px 16px;border-radius:4px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:14px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--btn-bg);color:var(--btn-ink);border-color:var(--btn-bg);font-weight:600}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.6;cursor:default}
+.msg{font-size:13px;color:var(--muted);min-height:1.4em}
+.msg.err{color:var(--err)}
+
+.ledger-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ledger-head h2{margin-bottom:10px}
+.ledger-head .hint{font-size:12px;color:var(--muted)}
+.ledger{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:4px}
+.item{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px 16px;padding:14px 16px;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.main{flex:1 1 260px;min-width:0}
+.main h3{margin:0;font:600 16px/1.3 var(--font-head);overflow-wrap:anywhere}
+.pos{margin:2px 0 0;overflow-wrap:anywhere}
+.meta{margin:4px 0 0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto}
+@media (max-width:520px){.side{flex-direction:row;width:100%;justify-content:space-between;align-items:center}}
+.status{width:auto;font-size:13px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid transparent;background:var(--pb);color:var(--pi);cursor:pointer}
+.st-sent{--pb:var(--p-sent-bg);--pi:var(--p-sent-ink)}
+.st-hr{--pb:var(--p-hr-bg);--pi:var(--p-hr-ink)}
+.st-interview{--pb:var(--p-interview-bg);--pi:var(--p-interview-ink)}
+.st-test{--pb:var(--p-test-bg);--pi:var(--p-test-ink)}
+.st-offer{--pb:var(--p-offer-bg);--pi:var(--p-offer-ink)}
+.st-rejected{--pb:var(--p-rejected-bg);--pi:var(--p-rejected-ink)}
+.st-ghost{--pb:var(--p-ghost-bg);--pi:var(--p-ghost-ink)}
+.acts{display:flex;gap:4px}
+.link{cursor:pointer;background:none;border:0;padding:6px 8px;font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.link:hover{color:var(--ink)}
+.link.danger.armed{color:var(--err);font-weight:600}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font:600 16px var(--font-head);margin-bottom:4px}
+
+.backup p{margin:0 0 12px;font-size:14px;color:var(--muted)}
+.backup .row{display:flex;flex-wrap:wrap;gap:10px}
+.backup .msg{margin-top:10px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<header class="band">
+  <div class="wrap head">
+    <div class="brand">
+      <img class="logo" src="icon.svg" alt="" width="48" height="48">
+      <div>
+        <h1>Lamaran Kerja</h1>
+        <p class="sub" id="last">Belum ada lamaran tercatat</p>
+      </div>
+    </div>
+    <div class="tally"><span class="n" id="count">0</span><span class="l">lamaran</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" id="formCard" aria-labelledby="formTitle">
+    <h2 id="formTitle">Tambah lamaran</h2>
+    <form id="form" autocomplete="off">
+      <div class="grid">
+        <div class="field full">
+          <label for="company">Nama perusahaan</label>
+          <input id="company" required maxlength="120" autocapitalize="words" placeholder="Ketik atau tempel nama perusahaan">
+        </div>
+        <div class="field full">
+          <label for="position">Posisi yang dilamar</label>
+          <input id="position" required maxlength="120" placeholder="mis. Staff Administrasi">
+        </div>
+        <div class="field">
+          <label for="date">Tanggal lamaran</label>
+          <input id="date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="via">Lamar via</label>
+          <select id="via" required>
+            <option value="" disabled selected>Pilih</option>
+            <option>Email</option>
+            <option>JobStreet</option>
+            <option>LinkedIn</option>
+            <option>Glints</option>
+            <option>Kalibrr</option>
+            <option>Indeed</option>
+            <option>WhatsApp</option>
+            <option>Website perusahaan</option>
+            <option>Referensi</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="field full" id="viaOtherWrap" hidden>
+          <label for="viaOther">Tulis lamar via apa</label>
+          <input id="viaOther" maxlength="60" placeholder="mis. Instagram, brosur, job fair">
+        </div>
+        <div class="field full">
+          <label for="link">Link lowongan <span class="opt">(opsional)</span></label>
+          <input id="link" type="text" inputmode="url" maxlength="500" autocapitalize="none" spellcheck="false" placeholder="Tempel link lowongan">
+        </div>
+      </div>
+      <div class="dupe" id="dupe" role="alert" hidden></div>
+      <div class="actions">
+        <button class="btn primary" id="saveBtn" type="submit">Simpan</button>
+        <button class="btn" id="cancelBtn" type="button" hidden>Batal</button>
+        <span class="msg" id="msg" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="listTitle">
+    <div class="ledger-head">
+      <h2 id="listTitle">Riwayat lamaran</h2>
+      <span class="hint">Terbaru di atas</span>
+    </div>
+    <ul class="ledger" id="list"></ul>
+  </section>
+
+  <section class="card backup" aria-labelledby="backupTitle">
+    <h2 id="backupTitle">Cadangan data</h2>
+    <p id="storeNote">Memuat data…</p>
+    <div class="row">
+      <button class="btn" id="xlsxBtn" type="button" hidden>Ekspor ke Excel</button>
+      <button class="btn" id="jsonBtn" type="button" hidden>Cadangkan (JSON)</button>
+      <button class="btn" id="restoreBtn" type="button">Pulihkan dari cadangan</button>
+      <input id="file" type="file" accept=".json,application/json" hidden>
+    </div>
+    <div class="msg" id="msg2" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+var KEEP=['PT','CV','UD','PD','KSP','BPR'];
+var KEEP_POS=KEEP.concat(['IT','HR','HRD','QA','UI','UX','SPV','AR','AP','GA','PPIC','CS','SEO','SQL','CEO','CFO','PIC','K3']);
+function titleCase(s,keep){
+  keep=keep||KEEP;
+  return s.toLowerCase().replace(/(^|[\s\-\/(.])([^\s\-\/(.]+)/g,function(m,pre,w){
+    var up=w.toUpperCase();
+    return pre+(keep.indexOf(up)>-1?up:w.charAt(0).toUpperCase()+w.slice(1));
+  });
+}
+function cleanName(s){return titleCase(String(s).replace(/\s+/g,' ').trim());}
+function cleanPos(s){return titleCase(String(s).replace(/\s+/g,' ').trim(),KEEP_POS);}
+function cleanUrl(s){
+  s=String(s||'').trim();
+  if(!s)return '';
+  if(!/^https?:\/\//i.test(s))s='https://'+s;
+  try{
+    var u=new URL(s);
+    return ((u.protocol==='http:'||u.protocol==='https:')&&u.hostname.indexOf('.')>0)?u.href:'';
+  }catch(e){return '';}
+}
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return u;}}
+function keyOf(s){return String(s).toLowerCase().replace(/\b(pt|cv|ud|pd|tbk)\b/g,'').replace(/[^a-z0-9]/g,'');}
+function pad(n){return n<10?'0'+n:''+n;}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+var MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+function fmtDate(s){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');
+  if(!m)return s||'';
+  return parseInt(m[3],10)+' '+MONTHS[parseInt(m[2],10)-1]+' '+m[1];
+}
+function excelSerial(s){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');
+  if(!m)return s;
+  return Math.round((Date.UTC(+m[1],+m[2]-1,+m[3])-Date.UTC(1899,11,30))/86400000);
+}
+
+var STATUSES=[['sent','Terkirim'],['hr','Dihubungi HR'],['interview','Interview'],['test','Tes'],['offer','Ditawari'],['rejected','Ditolak'],['ghost','Ghosting']];
+function statusLabel(k){for(var i=0;i<STATUSES.length;i++){if(STATUSES[i][0]===k)return STATUSES[i][1];}return 'Terkirim';}
+function validStatus(k){for(var i=0;i<STATUSES.length;i++){if(STATUSES[i][0]===k)return true;}return false;}
+function viaText(it){return it.via==='Lainnya'&&it.viaOther?it.viaOther:it.via;}
+
+function $(id){return document.getElementById(id);}
+var el={};
+['form','company','position','date','via','viaOther','viaOtherWrap','dupe','saveBtn','cancelBtn','msg','msg2','list','count','last','formCard','formTitle','storeNote','xlsxBtn','jsonBtn','restoreBtn','file','link'].forEach(function(k){el[k]=$(k);});
+
+function h(tag,attrs){
+  var e=document.createElement(tag);
+  attrs=attrs||{};
+  for(var k in attrs){
+    var v=attrs[k];
+    if(k==='class')e.className=v;
+    else if(k==='text')e.textContent=v;
+    else if(k.indexOf('on')===0)e.addEventListener(k.slice(2),v);
+    else if(v!==false&&v!=null)e.setAttribute(k,v===true?'':v);
+  }
+  for(var i=2;i<arguments.length;i++){
+    var c=arguments[i];
+    if(c==null)continue;
+    e.appendChild(c.nodeType?c:document.createTextNode(c));
+  }
+  return e;
+}
+
+var items=[], loaded=false, editingId=null, pendingDelete=null, store=null, dl=null;
+var msgTimer={};
+function setMsg(target,text,isErr){
+  var node=target===2?el.msg2:el.msg;
+  node.textContent=text||'';
+  node.className='msg'+(isErr?' err':'');
+  clearTimeout(msgTimer[target]);
+  if(text&&!isErr)msgTimer[target]=setTimeout(function(){node.textContent='';},4000);
+}
+function fail(target,err){
+  var c=err&&err.code;
+  setMsg(target,c==='invalid_argument'?'Kamu tidak punya izin mengubah data di halaman ini.':c==='quota_exceeded'?'Penyimpanan penuh.':'Gagal menyimpan. Coba lagi.',true);
+}
+
+/* ---------- storage ---------- */
+var LS='lamaran-kerja-v1';
+var localStore={
+  mode:'local',
+  newId:function(){return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);},
+  init:function(){
+    try{var raw=JSON.parse(localStorage.getItem(LS)||'[]');items=Array.isArray(raw)?raw:[];}catch(e){items=[];}
+    loaded=true; render();
+  },
+  persist:function(){
+    try{localStorage.setItem(LS,JSON.stringify(items));}
+    catch(e){setMsg(1,'Browser menolak menyimpan data. Cadangkan lewat ekspor.',true);}
+  },
+  put:function(it){
+    var i=items.findIndex(function(x){return x.id===it.id;});
+    if(i>=0)items[i]=it; else items.push(it);
+    this.persist(); render(); return Promise.resolve();
+  },
+  patch:function(id,p){
+    var it=items.find(function(x){return x.id===id;});
+    if(it)Object.assign(it,p);
+    this.persist(); render(); return Promise.resolve();
+  },
+  remove:function(id){
+    items=items.filter(function(x){return x.id!==id;});
+    this.persist(); render(); return Promise.resolve();
+  }
+};
+function cloudStore(db){
+  var col=db.collection('applications');
+  return {
+    mode:'cloud',
+    newId:function(){return col.doc().id;},
+    init:function(){
+      var timer=setTimeout(function(){
+        if(!loaded){loaded=true;render();setMsg(1,'Data belum bisa dijangkau. Coba muat ulang sebentar lagi.',true);}
+      },10000);
+      col.onSnapshot(function(snap){
+        items=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+        if(!snap.metadata.fromCache||items.length){
+          loaded=true; clearTimeout(timer);
+        }
+        render();
+      },function(err){
+        clearTimeout(timer); loaded=true; render();
+        setMsg(1,err&&err.code==='revoked'?'Akses ke data dicabut.':'Data tidak bisa dimuat.',true);
+      });
+    },
+    put:function(it){var d=Object.assign({},it);delete d.id;return col.doc(it.id).set(d);},
+    patch:function(id,p){return col.doc(id).update(p);},
+    remove:function(id){return col.doc(id).delete();}
+  };
+}
+
+/* ---------- form ---------- */
+function findDupe(){
+  var c=keyOf(el.company.value), p=keyOf(el.position.value);
+  if(!c||!p)return null;
+  return items.find(function(x){return x.id!==editingId&&keyOf(x.company)===c&&keyOf(x.position)===p;})||null;
+}
+function refresh(){
+  el.viaOtherWrap.hidden=el.via.value!=='Lainnya';
+  var d=findDupe();
+  if(d){
+    el.dupe.hidden=false;
+    el.dupe.textContent='Kamu sudah melamar ke '+d.company+' sebagai '+d.position+' pada '+fmtDate(d.date)+' (status: '+statusLabel(d.status)+'). Simpan lagi hanya kalau ini lamaran yang terpisah.';
+  } else el.dupe.hidden=true;
+  el.saveBtn.textContent=d?'Tetap simpan':(editingId?'Simpan perubahan':'Simpan');
+}
+el.company.addEventListener('input',function(){
+  var pos=el.company.selectionStart, v=titleCase(el.company.value);
+  if(v!==el.company.value){
+    el.company.value=v;
+    try{el.company.setSelectionRange(pos,pos);}catch(e){}
+  }
+  refresh();
+});
+el.company.addEventListener('blur',function(){el.company.value=cleanName(el.company.value);refresh();});
+el.position.addEventListener('input',function(){
+  var pos=el.position.selectionStart, v=titleCase(el.position.value,KEEP_POS);
+  if(v!==el.position.value){
+    el.position.value=v;
+    try{el.position.setSelectionRange(pos,pos);}catch(e){}
+  }
+  refresh();
+});
+el.position.addEventListener('blur',function(){el.position.value=cleanPos(el.position.value);refresh();});
+el.link.addEventListener('blur',function(){var u=cleanUrl(el.link.value);if(u)el.link.value=u;});
+el.via.addEventListener('change',refresh);
+
+function exitEdit(){
+  editingId=null;
+  el.formTitle.textContent='Tambah lamaran';
+  el.cancelBtn.hidden=true;
+  el.company.value=''; el.position.value=''; el.viaOther.value=''; el.link.value='';
+  refresh();
+}
+function startEdit(it){
+  editingId=it.id;
+  el.formTitle.textContent='Ubah lamaran';
+  el.cancelBtn.hidden=false;
+  el.company.value=it.company; el.position.value=it.position;
+  el.date.value=it.date; el.via.value=it.via; el.viaOther.value=it.viaOther||''; el.link.value=it.link||'';
+  refresh();
+  el.formCard.scrollIntoView();
+  el.company.focus();
+}
+el.cancelBtn.addEventListener('click',function(){exitEdit();setMsg(1,'');});
+
+el.form.addEventListener('submit',function(e){
+  e.preventDefault();
+  var company=cleanName(el.company.value);
+  var position=cleanPos(el.position.value);
+  var via=el.via.value, viaOther=el.viaOther.value.trim();
+  var rawLink=el.link.value.trim(), link=cleanUrl(rawLink);
+  if(!company||!position||!el.date.value||!via){setMsg(1,'Lengkapi semua kolom dulu.',true);return;}
+  if(via==='Lainnya'&&!viaOther){setMsg(1,'Tulis lamar via apa.',true);return;}
+  if(rawLink&&!link){setMsg(1,'Link lowongan tidak valid. Pastikan alamatnya lengkap.',true);return;}
+  var existing=editingId?items.find(function(x){return x.id===editingId;}):null;
+  var it={
+    id:editingId||store.newId(),
+    company:company, position:position, date:el.date.value,
+    via:via, viaOther:via==='Lainnya'?viaOther:'', link:link,
+    status:existing?existing.status:'sent',
+    createdAt:existing?existing.createdAt:Date.now()
+  };
+  var wasEditing=!!editingId;
+  el.saveBtn.disabled=true;
+  Promise.resolve(store.put(it)).then(function(){
+    if(wasEditing)exitEdit();
+    else{el.company.value='';el.position.value='';el.viaOther.value='';el.link.value='';refresh();}
+    setMsg(1,'Tersimpan: '+company);
+    el.company.focus();
+  }).catch(function(err){fail(1,err);}).then(function(){el.saveBtn.disabled=false;});
+});
+
+/* ---------- list ---------- */
+function sortedItems(){
+  return items.slice().sort(function(a,b){
+    return String(b.date).localeCompare(String(a.date))||((b.createdAt||0)-(a.createdAt||0));
+  });
+}
+function row(it){
+  var sel=h('select',{class:'status st-'+it.status,'aria-label':'Status lamaran '+it.company,onchange:function(){
+    var v=sel.value; sel.className='status st-'+v;
+    Promise.resolve(store.patch(it.id,{status:v})).catch(function(err){fail(1,err);});
+  }});
+  STATUSES.forEach(function(s){
+    var o=h('option',{value:s[0],text:s[1]}); if(s[0]===it.status)o.selected=true; sel.appendChild(o);
+  });
+  var armed=pendingDelete===it.id;
+  var del=h('button',{class:'link danger'+(armed?' armed':''),type:'button',text:armed?'Yakin hapus?':'Hapus',onclick:function(){
+    if(pendingDelete!==it.id){
+      pendingDelete=it.id; render();
+      setTimeout(function(){if(pendingDelete===it.id){pendingDelete=null;render();}},3500);
+      return;
+    }
+    pendingDelete=null;
+    if(editingId===it.id)exitEdit();
+    Promise.resolve(store.remove(it.id)).catch(function(err){fail(1,err);});
+  }});
+  return h('li',{class:'item'},
+    h('div',{class:'main'},
+      h('h3',{text:it.company}),
+      h('p',{class:'pos',text:it.position}),
+      h('p',{class:'meta',text:fmtDate(it.date)+' · via '+viaText(it)}),
+      (it.link&&/^https?:\/\//i.test(it.link))?h('p',{class:'meta'},h('a',{class:'lnk',href:it.link,target:'_blank',rel:'noopener noreferrer',text:'Lihat lowongan · '+hostOf(it.link)})):null
+    ),
+    h('div',{class:'side'},sel,
+      h('div',{class:'acts'},
+        h('button',{class:'link',type:'button',text:'Ubah',onclick:function(){startEdit(it);}}),
+        del
+      )
+    )
+  );
+}
+function render(){
+  var list=sortedItems();
+  el.list.textContent='';
+  el.count.textContent=String(items.length);
+  el.last.textContent=list.length?'Lamaran terakhir: '+fmtDate(list[0].date):'Belum ada lamaran tercatat';
+  if(!loaded){
+    el.list.appendChild(h('li',{class:'empty',text:'Memuat data…'}));
+  } else if(!list.length){
+    el.list.appendChild(h('li',{class:'empty'},h('strong',{text:'Belum ada lamaran'}),'Isi formulir di atas. Lamaran pertamamu akan muncul di sini.'));
+  } else {
+    list.forEach(function(it){el.list.appendChild(row(it));});
+  }
+  refresh();
+}
+
+/* ---------- export / backup ---------- */
+function saveFile(filename,data){
+  if(!dl){
+    try{
+      var blob=new Blob([data],{type:filename.slice(-5)==='.json'?'application/json':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      var a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href);},4000);
+      setMsg(2,'Berkas diunduh: '+filename);
+    }catch(e){setMsg(2,'Gagal menyimpan berkas.',true);}
+    return;
+  }
+  dl.save({filename:filename,data:data}).then(function(){
+    setMsg(2,'Berkas siap: '+filename);
+  }).catch(function(err){
+    var c=err&&err.code;
+    if(c==='declined')return;
+    setMsg(2,c==='host_unavailable'?'Aplikasi ini tidak bisa menyimpan berkas. Buka halaman ini di browser.':'Gagal menyimpan berkas.',true);
+  });
+}
+el.xlsxBtn.addEventListener('click',function(){
+  var list=sortedItems();
+  if(!list.length){setMsg(2,'Belum ada data untuk diekspor.',true);return;}
+  if(typeof XLSX==='undefined'){setMsg(2,'Pustaka Excel belum termuat. Muat ulang halaman.',true);return;}
+  var rows=[['Nama Perusahaan','Tanggal Lamaran','Posisi','Lamar Via','Status','Link Lowongan']];
+  list.forEach(function(it){rows.push([it.company,excelSerial(it.date),it.position,viaText(it),statusLabel(it.status),it.link||'']);});
+  var ws=XLSX.utils.aoa_to_sheet(rows);
+  for(var i=2;i<=rows.length;i++){var c=ws['B'+i];if(c){c.t='n';c.z='dd/mm/yyyy';}}
+  ws['!cols']=[{wch:32},{wch:16},{wch:32},{wch:20},{wch:16},{wch:48}];
+  ws['!autofilter']={ref:'A1:F'+rows.length};
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Lamaran');
+  var buf=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  saveFile('lamaran-kerja-'+todayStr()+'.xlsx',buf);
+});
+el.jsonBtn.addEventListener('click',function(){
+  if(!items.length){setMsg(2,'Belum ada data untuk dicadangkan.',true);return;}
+  var out={app:'tracker-lamaran-kerja',version:1,exportedAt:new Date().toISOString(),items:sortedItems().map(function(it){var c=Object.assign({},it);delete c.id;return c;})};
+  saveFile('lamaran-kerja-cadangan-'+todayStr()+'.json',JSON.stringify(out,null,2));
+});
+el.restoreBtn.addEventListener('click',function(){el.file.click();});
+el.file.addEventListener('change',function(){
+  var f=el.file.files[0];
+  if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    var data;
+    try{data=JSON.parse(r.result);}catch(e){setMsg(2,'Berkas ini bukan cadangan yang valid.',true);return;}
+    importItems(Array.isArray(data)?data:(data&&data.items));
+  };
+  r.onerror=function(){setMsg(2,'Berkas tidak bisa dibaca.',true);};
+  r.readAsText(f);
+  el.file.value='';
+});
+async function importItems(arr){
+  if(!Array.isArray(arr)){setMsg(2,'Berkas ini bukan cadangan yang valid.',true);return;}
+  var seen={}, added=0, skipped=0;
+  items.forEach(function(x){seen[keyOf(x.company)+'|'+keyOf(x.position)+'|'+x.date]=1;});
+  el.restoreBtn.disabled=true;
+  try{
+    for(var i=0;i<arr.length;i++){
+      var r=arr[i];
+      if(!r||typeof r!=='object'){skipped++;continue;}
+      var c=cleanName(String(r.company||'')).slice(0,120);
+      var p=cleanPos(r.position||'').slice(0,120);
+      var d=String(r.date||'');
+      if(!c||!p||!/^\d{4}-\d{2}-\d{2}$/.test(d)){skipped++;continue;}
+      var key=keyOf(c)+'|'+keyOf(p)+'|'+d;
+      if(seen[key]){skipped++;continue;}
+      seen[key]=1;
+      var via=String(r.via||'Lainnya').slice(0,60);
+      await store.put({
+        id:store.newId(), company:c, position:p, date:d,
+        via:via, viaOther:String(r.viaOther||'').slice(0,60), link:cleanUrl(r.link),
+        status:validStatus(r.status)?r.status:'sent',
+        createdAt:typeof r.createdAt==='number'?r.createdAt:Date.now()+i
+      });
+      added++;
+    }
+    setMsg(2,added+' lamaran dipulihkan'+(skipped?', '+skipped+' dilewati (duplikat atau tidak lengkap).':'.'));
+  }catch(err){
+    fail(2,err);
+  }
+  el.restoreBtn.disabled=false;
+}
+
+/* ---------- start ---------- */
+el.date.value=todayStr();
+render();
+(async function boot(){
+  var db=null;
+  try{db=(window.claude&&window.claude.use)?await window.claude.use('db'):null;}catch(e){db=null;}
+  try{dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null;}catch(e){dl=null;}
+  store=db?cloudStore(db):localStore;
+  el.storeNote.textContent=db
+    ?'Data tersimpan di halaman ini dan terbaca di semua perangkat tempat kamu membukanya.'
+    :'Data tersimpan di browser ini saja. Ekspor secara berkala supaya aman.';
+  el.xlsxBtn.hidden=false;el.jsonBtn.hidden=false;
+  store.init();
+})();
+})();
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+}
+</script>
+</body>
+</html>
